@@ -2,11 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
   apiVersion: '2024-06-20',
 })
 
 export async function POST(request: NextRequest) {
+  // Check if Stripe is properly configured
+  if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_placeholder') {
+    return NextResponse.json(
+      { error: 'Stripe not configured. Please add STRIPE_SECRET_KEY environment variable.' },
+      { status: 500 }
+    )
+  }
+
   try {
     const supabase = createClient()
     const { data: { user }, error: userError } = await supabase.auth.getUser()
