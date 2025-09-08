@@ -1,15 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Optimized for Hostinger/Plesk deployment
+  output: 'standalone',
+  poweredByHeader: false,
+  compress: true,
+  
+  // Build optimizations
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has type errors.
     ignoreBuildErrors: true,
+  },
+  
+  // Image optimization for shared hosting
+  images: {
+    unoptimized: true,
+  },
+  
+  // Disable server-side features that might not work on shared hosting
+  experimental: {
+    serverComponentsExternalPackages: ['@supabase/supabase-js'],
   },
 };
 
