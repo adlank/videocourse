@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 
-export default function CoursesPage() {
+function CoursesContent() {
   const [courses, setCourses] = useState<any[]>([])
   const [categories, setCategories] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -249,5 +249,28 @@ export default function CoursesPage() {
 
       <Footer />
     </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Kurse werden geladen...</p>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  )
+}
+
+export default function CoursesPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <CoursesContent />
+    </Suspense>
   )
 }

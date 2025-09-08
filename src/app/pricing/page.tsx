@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-export default function PricingPage() {
+function PricingContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
@@ -427,5 +427,24 @@ export default function PricingPage() {
 
       <Footer />
     </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p>Lädt...</p>
+      </div>
+    </div>
+  )
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <PricingContent />
+    </Suspense>
   )
 }
